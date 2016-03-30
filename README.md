@@ -11,8 +11,8 @@ A directory named "cardtradr" will be created and everything in the repository w
 
 ##How to update your local clone:
 
-cd cardtradr
-git pull
+cd cardtradr \n
+git pull \n
 
 ##How to commit your work and upload it to the repository:
 
