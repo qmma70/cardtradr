@@ -10,6 +10,7 @@ git clone https://github.com/qmma70/cardtradr.git
 A directory named "cardtradr" will be created and everything in the repository will be downloaded into it.
 
 ##How to update your local clone:
+Before you start working, always make sure your local repository is up-to-date!
 
 cd cardtradr 
 
