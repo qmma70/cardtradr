@@ -20,6 +20,8 @@ git pull
 
 cd cardtradr
 
+git add * (if you created at least one new file)
+
 git commit -a -m 'what changes did you make?'
 
 git push
