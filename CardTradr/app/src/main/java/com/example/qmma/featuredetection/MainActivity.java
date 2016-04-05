@@ -1,7 +1,9 @@
 package com.example.qmma.featuredetection;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
     TextView text;
     Button button;
+    ProgressDialog progress;
 
     private String input2, picsDir;
 
@@ -61,10 +64,12 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
-        takePictureIntent.putExtra("outputX", 800);
-        takePictureIntent.putExtra("outputY", 600);
-        takePictureIntent.putExtra("scale", true);
+        //takePictureIntent.putExtra("outputX", 800);
+        //takePictureIntent.putExtra("outputY", 600);
+        //takePictureIntent.putExtra("scale", true);
         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+        progress = ProgressDialog.show(this, "Calculating",
+                "Comparing images...", true);
     }
 
     @Override
@@ -75,17 +80,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            int maxSimilarity = 0;
-            int bestMatchIndex = -1;
+            Task task = new Task();
+            task.execute(this);
+        } else {
+            Log.e("CARD", "photo not saved.");
+        }
+    }
+
+    private class Task extends AsyncTask<MainActivity, Void, Void> {
+        int maxSimilarity = 0;
+        int bestMatchIndex = -1;
+        MainActivity activity;
+        @Override
+        protected Void doInBackground(MainActivity... params) {
+            activity = params[0];
             for(int i = 0; i < ImageData.files.length; i++) {
                 String input1 = picsDir + File.separator + String.valueOf(i) + ".jpg";
-                int similarity = CVCompare.compare(input1, input2, this.picsDir);
+                int similarity = CVCompare.compare(input1, input2, picsDir);
                 if (similarity > 20 && similarity > maxSimilarity) {
                     maxSimilarity = similarity;
                     bestMatchIndex = i;
                 }
             } // for
+            return null;
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
                 CurrencyToUSD ct = new CurrencyToUSD(ImageData.values[bestMatchIndex]);
                 ct.execute(new String[] {ImageData.types[bestMatchIndex]});
@@ -98,9 +120,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 text.setText("No match.");
             }
-        } else {
-            Log.e("CARD", "photo not saved.");
+            progress.dismiss();
         }
     }
-
 }
