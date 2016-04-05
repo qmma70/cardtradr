@@ -13,12 +13,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.opencv.android.OpenCVLoader;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +26,14 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
-    ImageView imageView;
+    Button button;
+    //ImageView imageView;
+    public static final int BILL = 0;
+    public static final int CARD = 1;
+
+    int[] files = new int[] {R.drawable.usd_100, R.drawable.usd_1, R.drawable.rmb_100};
+    String[] files_names = {"100 USD bill", "1 USD bill", "100 RMB bill"};
+    int[] types = new int[] {BILL, BILL, BILL};
 
     private String input1, input2, picsDir;
 
@@ -43,9 +50,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         text = (TextView) findViewById(R.id.text);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        button = (Button) findViewById(R.id.button);
 
-
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
 
         if (!OpenCVLoader.initDebug()) {
             Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
@@ -70,28 +84,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Bitmap bm_in1 = BitmapFactory.decodeResource(getResources(),
-                R.drawable.a1);
-        FileOutputStream out;
-        try {
-            out = new FileOutputStream(input1);
-            bm_in1.compress(Bitmap.CompressFormat.PNG, 100, out);
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-
-
-
-
         File newfile = new File(input2);
         try {
             newfile.createNewFile();
@@ -104,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
     }
 
     @Override
@@ -113,13 +104,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            Log.e("CARD", "photo saved.");
-            int similarity = CVCompare.compare(input1, input2, this.picsDir);
-            text.setText("Similarity: " + String.valueOf(similarity));
+            int maxSimilarity = 0;
+            int bestMatchIndex = -1;
+            for(int i = 0; i < this.files.length; i++) {
+                Bitmap bm_in1 = BitmapFactory.decodeResource(getResources(),
+                        this.files[i]);
+                FileOutputStream out;
+                try {
+                    out = new FileOutputStream(input1);
+                    bm_in1.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                int similarity = CVCompare.compare(input1, input2, this.picsDir);
+                if (similarity > 20 && similarity > maxSimilarity) {
+                    maxSimilarity = similarity;
+                    bestMatchIndex = i;
+                }
+            } // for
+
+
+            if (bestMatchIndex >= 0) {
+                text.setText("This is a " + this.files_names[bestMatchIndex]);
+            } else {
+                text.setText("No match.");
+            }
             //File imgFile = new File(this.picsDir + "out.png");
             //Bitmap bm = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             //imageView.setImageBitmap(bm);
