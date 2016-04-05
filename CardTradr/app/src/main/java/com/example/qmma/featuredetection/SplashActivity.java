@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -23,10 +24,12 @@ public class SplashActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+    private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        textView = (TextView) findViewById(R.id.textView);
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -42,11 +45,15 @@ public class SplashActivity extends AppCompatActivity {
 
     private class Loader extends AsyncTask<SplashActivity, Void, Void> {
         private SplashActivity activity;
+        private String txt;
         @Override
         protected Void doInBackground(SplashActivity... params) {
             activity = params[0];
             String picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+            int total = ImageData.files.length;
             for(int i = 0; i < ImageData.files.length; i++) {
+                txt = "Copying files (" + String.valueOf(i + 1) + "/" + String.valueOf(total) + ")...";
+                publishProgress();
                 String input1 = picsDir + File.separator + String.valueOf(i) + ".jpg";
                 if (! new File(input1).exists()) {
                     Bitmap bm_in1 = BitmapFactory.decodeResource(getResources(),
@@ -68,7 +75,9 @@ public class SplashActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+
             } // for
+
             return null;
         }
 
@@ -79,6 +88,11 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(activity, MainActivity.class);
             startActivity(intent);
             finish();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            textView.setText(txt);
         }
     }
 }
