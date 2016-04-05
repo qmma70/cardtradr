@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -28,10 +29,6 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     //ImageView imageView;
 
-    int[] files = new int[] {R.drawable.usd_100, R.drawable.usd_1, R.drawable.rmb_100};
-    String[] files_names = {"100 USD bill", "1 USD bill", "100 RMB bill"};
-    String[] types = {"USD", "USD", "CNY"};
-    int[] values = new int[] {100, 1, 100};
 
 
     private String input1, input2, picsDir;
@@ -108,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             int maxSimilarity = 0;
             int bestMatchIndex = -1;
-            for(int i = 0; i < this.files.length; i++) {
+            for(int i = 0; i < ImageData.files.length; i++) {
                 Bitmap bm_in1 = BitmapFactory.decodeResource(getResources(),
-                        this.files[i]);
+                        ImageData.files[i]);
                 FileOutputStream out;
                 try {
                     out = new FileOutputStream(input1);
@@ -136,10 +133,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (bestMatchIndex >= 0) {
-                CurrencyToUSD ct = new CurrencyToUSD(values[bestMatchIndex]);
-                ct.execute(new String[] {types[bestMatchIndex]});
+                CurrencyToUSD ct = new CurrencyToUSD(ImageData.values[bestMatchIndex]);
+                ct.execute(new String[] {ImageData.types[bestMatchIndex]});
                 try {
-                    text.setText("This is a " + this.files_names[bestMatchIndex] + ". It is equal to " + ct.get() + " USD (Bloomberg).");
+                    text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ". It is equal to " + ct.get() + " USD (Bloomberg).");
                 } catch (Exception e) {
                     //
                     e.printStackTrace();

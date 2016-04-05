@@ -10,6 +10,7 @@ import java.net.URLConnection;
 
 /**
  * Created by qmma on 16/4/5.
+ * Converts a currency to USD.
  */
 public class CurrencyToUSD extends AsyncTask<String, Integer, Double> {
     // queries Bloomberg quotes
