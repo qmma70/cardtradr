@@ -23,13 +23,13 @@ import org.opencv.android.OpenCVLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
     Button button;
     //ImageView imageView;
-
-
+    final int[] results = new int[ImageData.files.length];
 
     private String input1, input2, picsDir;
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input1 = picsDir.getAbsolutePath() + File.separator + "1.jpg";
-        input2 = picsDir.getAbsolutePath() + File.separator + "2.jpg";
+        input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
 
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
             );
         }
 
-
         File newfile = new File(input2);
         try {
             newfile.createNewFile();
@@ -91,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
+        takePictureIntent.putExtra("outputX", 800);
+        takePictureIntent.putExtra("outputY", 600);
+        takePictureIntent.putExtra("aspectX", 1);
+        takePictureIntent.putExtra("aspectY", 1);
+        takePictureIntent.putExtra("scale", true);
         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
     }
 
@@ -124,13 +128,14 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
+                Log.e("CARD", "IO: " + String.valueOf(i));
                 int similarity = CVCompare.compare(input1, input2, this.picsDir);
+                Log.e("CARD", "Compare: " + String.valueOf(i));
                 if (similarity > 20 && similarity > maxSimilarity) {
                     maxSimilarity = similarity;
                     bestMatchIndex = i;
                 }
             } // for
-
 
             if (bestMatchIndex >= 0) {
                 CurrencyToUSD ct = new CurrencyToUSD(ImageData.values[bestMatchIndex]);
@@ -144,9 +149,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 text.setText("No match.");
             }
-            //File imgFile = new File(this.picsDir + "out.png");
-            //Bitmap bm = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            //imageView.setImageBitmap(bm);
         } else {
             Log.e("CARD", "photo not saved.");
         }
