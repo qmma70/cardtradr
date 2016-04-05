@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
-
+        /*
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } // for
+        */
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
