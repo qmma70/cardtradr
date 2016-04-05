@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     //ImageView imageView;
     final int[] results = new int[ImageData.files.length];
 
-    private String input1, input2, picsDir;
+    private String input2, picsDir;
 
     static final int REQUEST_TAKE_PHOTO = 2;
 
@@ -48,24 +48,8 @@ public class MainActivity extends AppCompatActivity {
         text = (TextView) findViewById(R.id.text);
         button = (Button) findViewById(R.id.button);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
-            }
-        });
-
-        if (!OpenCVLoader.initDebug()) {
-            Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
-        } else {
-            Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
-        }
-
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
-        input1 = picsDir.getAbsolutePath() + File.separator + "1.jpg";
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
 
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -79,37 +63,11 @@ public class MainActivity extends AppCompatActivity {
             );
         }
 
-        File newfile = new File(input2);
-        try {
-            newfile.createNewFile();
-        }
-        catch (IOException e)
-        {
-            Toast.makeText(getApplicationContext(), "Could not save photo.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
-        takePictureIntent.putExtra("outputX", 800);
-        takePictureIntent.putExtra("outputY", 600);
-        takePictureIntent.putExtra("aspectX", 1);
-        takePictureIntent.putExtra("aspectY", 1);
-        takePictureIntent.putExtra("scale", true);
-        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            int maxSimilarity = 0;
-            int bestMatchIndex = -1;
-            for(int i = 0; i < ImageData.files.length; i++) {
+        // installation. if this is the first time the app runs, copy files to picsDir.
+        // this step takes a lot of time.
+        for(int i = 0; i < ImageData.files.length; i++) {
+            String input1 = this.picsDir + File.separator + String.valueOf(i) + ".jpg";
+            if (! new File(input1).exists()) {
                 Bitmap bm_in1 = BitmapFactory.decodeResource(getResources(),
                         ImageData.files[i]);
                 FileOutputStream out;
@@ -128,9 +86,54 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-                Log.e("CARD", "IO: " + String.valueOf(i));
+            }
+        } // for
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
+        } else {
+            Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
+        }
+
+        File newfile = new File(input2);
+        try {
+            newfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            Toast.makeText(getApplicationContext(), "Could not save photo.", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
+        takePictureIntent.putExtra("outputX", 800);
+        takePictureIntent.putExtra("outputY", 600);
+        takePictureIntent.putExtra("scale", true);
+        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            int maxSimilarity = 0;
+            int bestMatchIndex = -1;
+            for(int i = 0; i < ImageData.files.length; i++) {
+                String input1 = picsDir + File.separator + String.valueOf(i) + ".jpg";
                 int similarity = CVCompare.compare(input1, input2, this.picsDir);
-                Log.e("CARD", "Compare: " + String.valueOf(i));
                 if (similarity > 20 && similarity > maxSimilarity) {
                     maxSimilarity = similarity;
                     bestMatchIndex = i;

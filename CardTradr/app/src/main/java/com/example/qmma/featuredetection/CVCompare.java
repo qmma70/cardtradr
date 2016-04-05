@@ -12,7 +12,6 @@ import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
