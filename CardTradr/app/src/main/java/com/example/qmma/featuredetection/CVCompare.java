@@ -61,7 +61,7 @@ public class CVCompare {
             //Log.e("TEST", String.valueOf(matches.get(i).toList().get(0).distance) + " " + String.valueOf(matches.get(i).toList().get(1).distance));
         }
         //
-
+        /*
         MatOfDMatch goodMatches = new MatOfDMatch();
 
         goodMatches.fromList(good_matches);
@@ -69,7 +69,7 @@ public class CVCompare {
         Scalar RED = new Scalar(255,0,0);
         Scalar GREEN = new Scalar(0,255,0);
         //output image
-        /*
+
         Mat outputImg = new Mat();
         MatOfByte drawnMatches = new MatOfByte();
         //this will draw all matches

@@ -1,7 +1,6 @@
 package com.example.qmma.featuredetection;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -28,12 +27,12 @@ public class MainActivity extends AppCompatActivity {
     TextView text;
     Button button;
     //ImageView imageView;
-    public static final int BILL = 0;
-    public static final int CARD = 1;
 
     int[] files = new int[] {R.drawable.usd_100, R.drawable.usd_1, R.drawable.rmb_100};
     String[] files_names = {"100 USD bill", "1 USD bill", "100 RMB bill"};
-    int[] types = new int[] {BILL, BILL, BILL};
+    String[] types = {"USD", "USD", "CNY"};
+    int[] values = new int[] {100, 1, 100};
+
 
     private String input1, input2, picsDir;
 
@@ -137,7 +136,14 @@ public class MainActivity extends AppCompatActivity {
 
 
             if (bestMatchIndex >= 0) {
-                text.setText("This is a " + this.files_names[bestMatchIndex]);
+                CurrencyToUSD ct = new CurrencyToUSD(values[bestMatchIndex]);
+                ct.execute(new String[] {types[bestMatchIndex]});
+                try {
+                    text.setText("This is a " + this.files_names[bestMatchIndex] + ". It is equal to " + ct.get() + " USD (Bloomberg).");
+                } catch (Exception e) {
+                    //
+                    e.printStackTrace();
+                }
             } else {
                 text.setText("No match.");
             }
