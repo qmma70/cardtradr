@@ -66,13 +66,11 @@ public class SplashActivity extends AppCompatActivity {
                             try {
                                 out.close();
                             } catch (Exception e) {
-                                Toast.makeText(activity.getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         }
                     } catch (Exception e) {
-                        Toast.makeText(activity.getApplicationContext(), "Could not read images in database.", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                       e.printStackTrace();
                     }
                 }
 

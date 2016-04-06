@@ -1,5 +1,7 @@
 package com.example.qmma.featuredetection;
 
+import android.util.Log;
+
 import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -32,13 +34,14 @@ public class CVCompare {
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 
         //first image
+        Log.e("TEST","1");
         Mat img1 = Imgcodecs.imread(inputFilePath1);
         Mat descriptors1 = new Mat();
         MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
 
         detector.detect(img1, keypoints1);
         descriptor.compute(img1, keypoints1, descriptors1);
-
+        Log.e("TEST", "2");
         //second image
         Mat img2 = Imgcodecs.imread(inputFilePath2);
         Mat descriptors2 = new Mat();
