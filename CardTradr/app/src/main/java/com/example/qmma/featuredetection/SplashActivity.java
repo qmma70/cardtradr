@@ -26,6 +26,14 @@ public class SplashActivity extends AppCompatActivity {
     };
     private TextView textView;
     @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            Loader loader = new Loader();
+            loader.execute(this);
+        }
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
@@ -38,9 +46,10 @@ public class SplashActivity extends AppCompatActivity {
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
             );
+        } else {
+            Loader loader = new Loader();
+            loader.execute(this);
         }
-        Loader loader = new Loader();
-        loader.execute(this);
     }
 
     private class Loader extends AsyncTask<SplashActivity, Void, Void> {
@@ -49,6 +58,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(SplashActivity... params) {
             activity = params[0];
+
             String picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
             int total = ImageData.files.length;
             for(int i = 0; i < ImageData.files.length; i++) {
