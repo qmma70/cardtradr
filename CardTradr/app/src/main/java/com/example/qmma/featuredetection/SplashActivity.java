@@ -29,6 +29,8 @@ public class SplashActivity extends AppCompatActivity {
         if (permission == PackageManager.PERMISSION_GRANTED) {
             Loader loader = new Loader();
             loader.execute(this);
+        } else {
+            finish();
         }
     }
     @Override

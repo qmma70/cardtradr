@@ -48,7 +48,6 @@ public class CVCompare {
         detector.detect(img2, keypoints2);
         descriptor.compute(img2, keypoints2, descriptors2);
 
-
         List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
         matcher.knnMatch(descriptors1, descriptors2, matches, 2);
         //Log.e("TEST", "nMatches = " + String.valueOf(matches.size()));
