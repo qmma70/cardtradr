@@ -52,7 +52,6 @@ public class CVCompare {
         matcher.knnMatch(descriptors1, descriptors2, matches, 2);
         //Log.e("TEST", "nMatches = " + String.valueOf(matches.size()));
 
-
         List<DMatch> good_matches = new ArrayList<DMatch>();
         for(int i = 0; i < matches.size(); i++) {
             if (matches.get(i).toList().get(0).distance < 0.75 * matches.get(i).toList().get(1).distance)
