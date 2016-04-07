@@ -53,38 +53,12 @@ public class MainActivity extends AppCompatActivity {
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
-
-
-        File newfile = new File(input2);
-        try {
-            newfile.createNewFile();
-        }
-        catch (IOException e)
-        {
-            Toast.makeText(getApplicationContext(), "Could not save photo.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
-        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
         progress = ProgressDialog.show(this, "Calculating",
                 "Comparing images...", true);
+        Task task = new Task();
+        task.execute(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            Task task = new Task();
-            task.execute(this);
-        } else {
-            Log.e("CARD", "photo not saved.");
-        }
-    }
 
     private class Task extends AsyncTask<MainActivity, Void, Void> {
         int maxSimilarity = 0;
