@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Card Tradr</string>
+    <string name="app_name">CardTrader</string>
+    <string name="instrLabel">Please select the type of card.</string>
+    <string name="btnTakePicLabel">Identify</string>
+    <string-array name="cardType">
+        <item>Sports</item>
+        <item>Trading</item>
+    </string-array>
 </resources>

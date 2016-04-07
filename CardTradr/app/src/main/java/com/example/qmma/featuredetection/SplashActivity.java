@@ -133,7 +133,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Intent intent = new Intent(activity, MainActivity.class);
+            Intent intent = new Intent(activity, MenuActivity.class);
             startActivity(intent);
             finish();
         }
