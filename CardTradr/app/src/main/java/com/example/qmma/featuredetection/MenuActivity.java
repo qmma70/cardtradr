@@ -20,6 +20,25 @@ public class MenuActivity extends AppCompatActivity {
     private Spinner spinner;
     static final int REQUEST_TAKE_PHOTO = 2;
 
+    private void takePic() {
+        File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
+
+
+        File newfile = new File(input2);
+        try {
+            newfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            Toast.makeText(getApplicationContext(), "Could not save photo.", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
+        startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,26 +46,14 @@ public class MenuActivity extends AppCompatActivity {
 
         btnTakePic = (Button) findViewById(R.id.btnTakePic);
         spinner = (Spinner) findViewById(R.id.cardSelectSpinner);
+
+        if (getIntent().hasExtra("AUTO")) {
+            takePic();
+        }
         btnTakePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                String input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
-
-
-                File newfile = new File(input2);
-                try {
-                    newfile.createNewFile();
-                }
-                catch (IOException e)
-                {
-                    Toast.makeText(getApplicationContext(), "Could not save photo.", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
+                takePic();
             }
         });
     }
