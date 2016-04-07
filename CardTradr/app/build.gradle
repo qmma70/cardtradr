@@ -26,4 +26,5 @@ dependencies {
     compile project(':openCVLibrary310')
     compile files('libs/gson-2.6.2.jar')
     compile files('libs/finding.jar')
+    compile files('libs/log4j-1.2.16.jar')
 }
