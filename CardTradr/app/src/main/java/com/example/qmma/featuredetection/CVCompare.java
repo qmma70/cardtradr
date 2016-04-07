@@ -55,7 +55,6 @@ public class CVCompare {
 
         List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
         matcher.knnMatch(descriptors1, descriptors2, matches, 2);
-        //Log.e("TEST", "nMatches = " + String.valueOf(matches.size()));
 
         List<DMatch> good_matches = new ArrayList<DMatch>();
         for(int i = 0; i < matches.size(); i++) {
@@ -83,34 +82,6 @@ public class CVCompare {
         return good_matches.size();
     }
 
-    public static int compare(String inputFilePath1, Mat descriptors2) {
-        FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
-        DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);;
-        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
-
-        //first image
-        Mat img1 = Imgcodecs.imread(inputFilePath1);
-        Mat descriptors1 = new Mat();
-        MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
-
-        detector.detect(img1, keypoints1);
-        descriptor.compute(img1, keypoints1, descriptors1);
-
-        String gsonD1 = matToJson(descriptors1);
-        Log.e("CARD", gsonD1);
-
-        // compare
-        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
-        matcher.knnMatch(descriptors1, descriptors2, matches, 2);
-
-        List<DMatch> good_matches = new ArrayList<DMatch>();
-        for(int i = 0; i < matches.size(); i++) {
-            if (matches.get(i).toList().get(0).distance < 0.75 * matches.get(i).toList().get(1).distance)
-                good_matches.add(matches.get(i).toList().get(0));
-        }
-
-        return good_matches.size();
-    }
 
     public static int compare(Mat descriptors1, Mat descriptors2) {
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
