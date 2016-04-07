@@ -10,10 +10,20 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.features2d.DescriptorExtractor;
+import org.opencv.features2d.FeatureDetector;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -37,6 +47,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         textView = (TextView) findViewById(R.id.textView);
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
+        } else {
+            Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
+        }
+
         int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -82,7 +99,33 @@ public class SplashActivity extends AppCompatActivity {
                        e.printStackTrace();
                     }
                 }
+                // Extract key points and write to i.dat
+                String dataFile1 = picsDir + File.separator + String.valueOf(i) + ".dat";
+                if (! new File(dataFile1).exists()) {
+                    FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
+                    DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
 
+                    Mat img1 = Imgcodecs.imread(input1);
+                    Mat descriptors1 = new Mat();
+                    MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
+
+                    detector.detect(img1, keypoints1);
+                    descriptor.compute(img1, keypoints1, descriptors1);
+
+                    String gsonD1 = CVCompare.matToJson(descriptors1);
+
+                    File myFile = new File(dataFile1);
+                    try {
+                        myFile.createNewFile();
+                        FileOutputStream fOut = new FileOutputStream(myFile);
+                        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                        myOutWriter.append(gsonD1);
+                        myOutWriter.close();
+                        fOut.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             } // for
             return null;
         }

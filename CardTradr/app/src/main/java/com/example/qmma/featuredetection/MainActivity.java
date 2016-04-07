@@ -21,8 +21,11 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
@@ -52,11 +55,6 @@ public class MainActivity extends AppCompatActivity {
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
 
-        if (!OpenCVLoader.initDebug()) {
-            Log.e(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), not working.");
-        } else {
-            Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
-        }
 
         File newfile = new File(input2);
         try {
@@ -69,9 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(newfile));
-        //takePictureIntent.putExtra("outputX", 800);
-        //takePictureIntent.putExtra("outputY", 600);
-        //takePictureIntent.putExtra("scale", true);
         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
         progress = ProgressDialog.show(this, "Calculating",
                 "Comparing images...", true);
@@ -107,11 +102,31 @@ public class MainActivity extends AppCompatActivity {
             detector.detect(img2, keypoints2);
             descriptor.compute(img2, keypoints2, descriptors2);
             for(int i = 0; i < ImageData.files.length; i++) {
-                String input1 = picsDir + File.separator + String.valueOf(i) + ".jpg";
-                int similarity = CVCompare.compare(input1, descriptors2);
-                if (similarity > 20 && similarity > maxSimilarity) {
-                    maxSimilarity = similarity;
-                    bestMatchIndex = i;
+                String dataFile1 = picsDir + File.separator + String.valueOf(i) + ".dat";
+                Mat descriptors1;
+                try {
+                    File myFile = new File(dataFile1);
+                    FileInputStream fIn = new FileInputStream(myFile);
+                    BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
+                    String aDataRow = "";
+                    String gsonD1 = "";
+                    while ((aDataRow = myReader.readLine()) != null)
+                    {
+                        gsonD1 += aDataRow ;
+                    }
+                    myReader.close();
+                    Log.e("CARD", gsonD1);
+                    descriptors1 = CVCompare.matFromJson(gsonD1);
+                    int similarity = CVCompare.compare(descriptors1, descriptors2);
+
+                    Log.e("CARD", "Similarity = " + String.valueOf(similarity));
+                    if (similarity > 20 && similarity > maxSimilarity) {
+
+                        maxSimilarity = similarity;
+                        bestMatchIndex = i;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } // for
             return null;
@@ -121,8 +136,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
-                CurrencyToUSD ct = new CurrencyToUSD(ImageData.values[bestMatchIndex]);
-                ct.execute(new String[] {ImageData.types[bestMatchIndex]});
                 text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
             } else {
                 text.setText("No match.");
