@@ -49,22 +49,12 @@
             android:layout_marginLeft="@dimen/marginSides" />
     </LinearLayout>
 
-    <ImageButton
-        android:layout_width="@dimen/roundWidth"
-        android:layout_height="@dimen/roundHeight"
-        android:id="@+id/imageButton"
-        android:layout_gravity="right"
-        android:src="@drawable/ic_local_grocery_store_24dp"
-        android:tint="@android:color/white"
-        android:elevation="@dimen/floatingElevation"
-        android:background="@color/colorPrimary"
-        android:layout_marginRight="@dimen/floatingMarginRight"
-        android:layout_marginBottom="@dimen/floatingElevation" />
+
 
     <ImageButton
         android:layout_width="@dimen/roundWidth"
         android:layout_height="@dimen/roundHeight"
-        android:id="@+id/imageButton2"
+        android:id="@+id/mapImageButton"
         android:layout_gravity="right"
         android:src="@drawable/ic_place_24dp"
         android:tint="@android:color/white"
