@@ -30,7 +30,7 @@ public class CVCompare {
         //String outputExtension = "png";
         //String outputFilePath = outputDir + File.separator + outputFileName + "." + outputExtension;
         FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
-        DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);;
+        DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 
         //first image
@@ -75,6 +75,31 @@ public class CVCompare {
                 outputImg, GREEN, RED, drawnMatches, Features2d.NOT_DRAW_SINGLE_POINTS);
         Imgcodecs.imwrite(outputFilePath, outputImg);
         */
+        return good_matches.size();
+    }
+
+    public static int compare(String inputFilePath1, Mat descriptors2) {
+        FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
+        DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);;
+        DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
+
+        //first image
+        Mat img1 = Imgcodecs.imread(inputFilePath1);
+        Mat descriptors1 = new Mat();
+        MatOfKeyPoint keypoints1 = new MatOfKeyPoint();
+
+        detector.detect(img1, keypoints1);
+        descriptor.compute(img1, keypoints1, descriptors1);
+
+        List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
+        matcher.knnMatch(descriptors1, descriptors2, matches, 2);
+
+        List<DMatch> good_matches = new ArrayList<DMatch>();
+        for(int i = 0; i < matches.size(); i++) {
+            if (matches.get(i).toList().get(0).distance < 0.75 * matches.get(i).toList().get(1).distance)
+                good_matches.add(matches.get(i).toList().get(0));
+        }
+
         return good_matches.size();
     }
 }

@@ -15,6 +15,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.features2d.DescriptorExtractor;
+import org.opencv.features2d.FeatureDetector;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,9 +99,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(MainActivity... params) {
             activity = params[0];
+            DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
+            FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
+            Mat img2 = Imgcodecs.imread(input2);
+            Mat descriptors2 = new Mat();
+            MatOfKeyPoint keypoints2 = new MatOfKeyPoint();
+            detector.detect(img2, keypoints2);
+            descriptor.compute(img2, keypoints2, descriptors2);
             for(int i = 0; i < ImageData.files.length; i++) {
                 String input1 = picsDir + File.separator + String.valueOf(i) + ".jpg";
-                int similarity = CVCompare.compare(input1, input2, picsDir);
+                int similarity = CVCompare.compare(input1, descriptors2);
                 if (similarity > 20 && similarity > maxSimilarity) {
                     maxSimilarity = similarity;
                     bestMatchIndex = i;
@@ -111,12 +123,7 @@ public class MainActivity extends AppCompatActivity {
             if (bestMatchIndex >= 0) {
                 CurrencyToUSD ct = new CurrencyToUSD(ImageData.values[bestMatchIndex]);
                 ct.execute(new String[] {ImageData.types[bestMatchIndex]});
-                try {
-                    text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ". It is equal to " + ct.get() + " USD (Bloomberg).");
-                } catch (Exception e) {
-                    //
-                    e.printStackTrace();
-                }
+                text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
             } else {
                 text.setText("No match.");
             }

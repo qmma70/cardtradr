@@ -10,7 +10,6 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.io.File;
@@ -85,7 +84,6 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
             } // for
-
             return null;
         }
 
