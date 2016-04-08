@@ -31,6 +31,7 @@ import java.util.List;
 public class CVCompare {
     // this method takes 2 input files and returns a similarity value between the two pictures.
     // it will also save a visualized comparison in outputDir.
+    public static double rate = 0.75;
     public static int compareWithOutput(String inputFilePath1, String inputFilePath2, String outputDir) {
         String outputFileName="out";
         String outputExtension = "png";
@@ -59,7 +60,7 @@ public class CVCompare {
 
         List<DMatch> good_matches = new ArrayList<DMatch>();
         for(int i = 0; i < matches.size(); i++) {
-            if (matches.get(i).toList().get(0).distance < 0.75 * matches.get(i).toList().get(1).distance)
+            if (matches.get(i).toList().get(0).distance < rate * matches.get(i).toList().get(1).distance)
                 good_matches.add(matches.get(i).toList().get(0));
             //Log.e("TEST", String.valueOf(matches.get(i).toList().get(0).distance) + " " + String.valueOf(matches.get(i).toList().get(1).distance));
         }

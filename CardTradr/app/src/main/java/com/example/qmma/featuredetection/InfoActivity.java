@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 
 public class InfoActivity extends AppCompatActivity {
     ImageView img;
-    TextView txt;
+    TextView txt, txt2, txt3, txt4, txt5, txt6;
     private String dir, file1, file2;
     private String confidence;
     Bitmap outBM;
@@ -29,6 +31,11 @@ public class InfoActivity extends AppCompatActivity {
 
         img = (ImageView) findViewById(R.id.imageView);
         txt = (TextView) findViewById(R.id.text);
+        txt2 = (TextView) findViewById(R.id.text2);
+        txt3 = (TextView) findViewById(R.id.text3);
+        txt4 = (TextView) findViewById(R.id.text4);
+        txt5 = (TextView) findViewById(R.id.text5);
+        txt6 = (TextView) findViewById(R.id.text6);
 
         Intent i = getIntent();
         dir = i.getStringExtra("DIR");
@@ -66,6 +73,11 @@ public class InfoActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             txt.setText("Confidence value: " + confidence);
+            txt2.setText("Matching keypoints:");
+            txt3.setText("Feature Detector: ORB");
+            txt4.setText("Matcher: Hamming/Brute Force");
+            txt5.setText("Classifier: kNN");
+            txt6.setText("Filter Rate: " + String.valueOf(CVCompare.rate));
             img.setImageBitmap(outBM);
             progress.dismiss();
         }
