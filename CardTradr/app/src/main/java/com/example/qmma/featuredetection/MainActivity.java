@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     TextView text;
     Button button;
     ProgressDialog progress;
+    Button test;
 
     private String input2, picsDir;
 
@@ -48,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 intent.putExtra("AUTO", "TRUE");
                 startActivity(intent);
+            }
+        });
+        test = (Button) findViewById(R.id.button2);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FindItem f = new FindItem();
+                f.execute();
             }
         });
 
