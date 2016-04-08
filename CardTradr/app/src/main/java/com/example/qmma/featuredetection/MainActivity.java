@@ -34,12 +34,10 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     ProgressDialog progress;
     Button test;
-    ImageView imageView;
-    TextView txtConfidence;
+    Button btnInfo;
 
     int maxSimilarity = 0;
     int bestMatchIndex = -1;
-    Bitmap outBM;
 
     private String input2, picsDir;
 
@@ -49,14 +47,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         text = (TextView) findViewById(R.id.text);
-        txtConfidence = (TextView) findViewById(R.id.txtConfidence);
         button = (Button) findViewById(R.id.button);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        btnInfo = (Button) findViewById(R.id.btnInfo);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 intent.putExtra("AUTO", "TRUE");
+                startActivity(intent);
+            }
+        });
+        btnInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                intent.putExtra("DIR", picsDir);
+                intent.putExtra("FILE1", picsDir + File.separator + bestMatchIndex + ".jpg");
+                intent.putExtra("FILE2", picsDir + File.separator + "input.jpg");
+                intent.putExtra("CONFIDENCE", String.valueOf(maxSimilarity));
                 startActivity(intent);
             }
         });
@@ -81,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        maxSimilarity = 0;
-        bestMatchIndex = -1;
     }
 
 
@@ -126,9 +132,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } // for
-            CVCompare.compareWithOutput(picsDir + File.separator + bestMatchIndex + ".jpg", picsDir + File.separator + "input.jpg", picsDir);
-            File imgFile = new  File(picsDir + File.separator + "out.png");
-            outBM = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             return null;
         }
 
@@ -137,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
                 text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
-                txtConfidence.setText("Confidence Value: " + String.valueOf(maxSimilarity));
-                imageView.setImageBitmap(outBM);
+                btnInfo.setEnabled(true);
             } else {
                 text.setText("No match.");
+                btnInfo.setEnabled(false);
             }
             progress.dismiss();
         }
