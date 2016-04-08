@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        
+
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
