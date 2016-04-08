@@ -19,6 +19,7 @@ import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +31,10 @@ import java.util.List;
 public class CVCompare {
     // this method takes 2 input files and returns a similarity value between the two pictures.
     // it will also save a visualized comparison in outputDir.
-    public static int compare(String inputFilePath1, String inputFilePath2, String outputDir) {
-        //String outputFileName="out";
-        //String outputExtension = "png";
-        //String outputFilePath = outputDir + File.separator + outputFileName + "." + outputExtension;
+    public static int compareWithOutput(String inputFilePath1, String inputFilePath2, String outputDir) {
+        String outputFileName="out";
+        String outputExtension = "png";
+        String outputFilePath = outputDir + File.separator + outputFileName + "." + outputExtension;
         FeatureDetector detector = FeatureDetector.create(FeatureDetector.ORB);
         DescriptorExtractor descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         DescriptorMatcher matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
@@ -63,22 +64,20 @@ public class CVCompare {
             //Log.e("TEST", String.valueOf(matches.get(i).toList().get(0).distance) + " " + String.valueOf(matches.get(i).toList().get(1).distance));
         }
         //
-        /*
-        MatOfDMatch goodMatches = new MatOfDMatch();
 
+        MatOfDMatch goodMatches = new MatOfDMatch();
         goodMatches.fromList(good_matches);
         //feature and connection colors
         Scalar RED = new Scalar(255,0,0);
         Scalar GREEN = new Scalar(0,255,0);
         //output image
-
         Mat outputImg = new Mat();
         MatOfByte drawnMatches = new MatOfByte();
         //this will draw all matches
         Features2d.drawMatches(img1, keypoints1, img2, keypoints2, goodMatches,
                 outputImg, GREEN, RED, drawnMatches, Features2d.NOT_DRAW_SINGLE_POINTS);
         Imgcodecs.imwrite(outputFilePath, outputImg);
-        */
+        Log.e("CARD", outputFilePath);
         return good_matches.size();
     }
 

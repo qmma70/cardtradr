@@ -2,15 +2,18 @@ package com.example.qmma.featuredetection;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +22,11 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,10 +34,14 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     ProgressDialog progress;
     Button test;
+    ImageView imageView;
+    TextView txtConfidence;
+
+    int maxSimilarity = 0;
+    int bestMatchIndex = -1;
+    Bitmap outBM;
 
     private String input2, picsDir;
-
-    static final int REQUEST_TAKE_PHOTO = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         text = (TextView) findViewById(R.id.text);
+        txtConfidence = (TextView) findViewById(R.id.txtConfidence);
         button = (Button) findViewById(R.id.button);
+        imageView = (ImageView) findViewById(R.id.imageView);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,10 +78,16 @@ public class MainActivity extends AppCompatActivity {
         task.execute(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        maxSimilarity = 0;
+        bestMatchIndex = -1;
+    }
+
 
     private class Task extends AsyncTask<MainActivity, Void, Void> {
-        int maxSimilarity = 0;
-        int bestMatchIndex = -1;
+
         MainActivity activity;
         @Override
         protected Void doInBackground(MainActivity... params) {
@@ -104,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.e("CARD", "Similarity = " + String.valueOf(similarity));
                     if (similarity > 20 && similarity > maxSimilarity) {
-
                         maxSimilarity = similarity;
                         bestMatchIndex = i;
                     }
@@ -112,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             } // for
+            CVCompare.compareWithOutput(picsDir + File.separator + bestMatchIndex + ".jpg", picsDir + File.separator + "input.jpg", picsDir);
+            File imgFile = new  File(picsDir + File.separator + "out.png");
+            outBM = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
             return null;
         }
 
@@ -120,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
                 text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
+                txtConfidence.setText("Confidence Value: " + String.valueOf(maxSimilarity));
+                imageView.setImageBitmap(outBM);
             } else {
                 text.setText("No match.");
             }
