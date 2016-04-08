@@ -11,6 +11,9 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,13 +36,38 @@ public class MainActivity extends AppCompatActivity {
     TextView text;
     Button button;
     ProgressDialog progress;
-    Button test;
-    Button btnInfo;
 
     int maxSimilarity = 0;
     int bestMatchIndex = -1;
+    boolean noMatch;
 
     private String input2, picsDir;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.info_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.details_menuitem) {
+            if (noMatch) {
+                Toast.makeText(getApplicationContext(), "No match to show.", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+            intent.putExtra("DIR", picsDir);
+            intent.putExtra("FILE1", picsDir + File.separator + bestMatchIndex + ".jpg");
+            intent.putExtra("FILE2", picsDir + File.separator + "input.jpg");
+            intent.putExtra("CONFIDENCE", String.valueOf(maxSimilarity));
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
         text = (TextView) findViewById(R.id.text);
         button = (Button) findViewById(R.id.button);
-        btnInfo = (Button) findViewById(R.id.btnInfo);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,26 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
-                intent.putExtra("DIR", picsDir);
-                intent.putExtra("FILE1", picsDir + File.separator + bestMatchIndex + ".jpg");
-                intent.putExtra("FILE2", picsDir + File.separator + "input.jpg");
-                intent.putExtra("CONFIDENCE", String.valueOf(maxSimilarity));
-                startActivity(intent);
-            }
-        });
-        test = (Button) findViewById(R.id.button2);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FindItem f = new FindItem();
-                f.execute();
-            }
-        });
-
+        
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
@@ -140,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
                 text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
-                btnInfo.setEnabled(true);
+                noMatch = false;
             } else {
                 text.setText("No match.");
-                btnInfo.setEnabled(false);
+                noMatch = true;
             }
             progress.dismiss();
         }

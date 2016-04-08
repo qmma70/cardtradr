@@ -8,12 +8,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -24,6 +21,7 @@ public class InfoActivity extends AppCompatActivity {
     private String confidence;
     Bitmap outBM;
     ProgressDialog progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,10 +72,10 @@ public class InfoActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             txt.setText("Confidence value: " + confidence);
             txt2.setText("Matching keypoints:");
-            txt3.setText("Feature Detector: ORB");
+            txt3.setText("Feature detector: ORB");
             txt4.setText("Matcher: Hamming/Brute Force");
             txt5.setText("Classifier: kNN");
-            txt6.setText("Filter Rate: " + String.valueOf(CVCompare.rate));
+            txt6.setText("Filter rate: " + String.valueOf(CVCompare.rate));
             img.setImageBitmap(outBM);
             progress.dismiss();
         }
