@@ -2,10 +2,6 @@ package com.example.qmma.featuredetection;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +22,12 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
@@ -41,7 +38,12 @@ public class MainActivity extends AppCompatActivity {
     int bestMatchIndex = -1;
     boolean noMatch;
 
+    Stack<Integer> stack_index;
+    Stack<Integer> stack_similarity;
+
     private String input2, picsDir;
+    TextView txtRunnerups0, txtRunnerups1, txtRunnerups2;
+    TextView txtP;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
         text = (TextView) findViewById(R.id.text);
         button = (Button) findViewById(R.id.button);
+        txtRunnerups0 = (TextView) findViewById(R.id.p1);
+        txtRunnerups1 = (TextView) findViewById(R.id.p2);
+        txtRunnerups2 = (TextView) findViewById(R.id.p3);
+        txtP = (TextView) findViewById(R.id.txtP);
+
+        stack_similarity = new Stack<Integer>();
+        stack_index = new Stack<Integer>();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
     }
+
 
 
     private class Task extends AsyncTask<MainActivity, Void, Void> {
@@ -135,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
                     if (similarity > 20 && similarity > maxSimilarity) {
                         maxSimilarity = similarity;
                         bestMatchIndex = i;
+                        if (stack_index.size() > 3) stack_index.pop();
+                        if (stack_similarity.size() > 3) stack_similarity.pop();
+                        stack_index.push(bestMatchIndex);
+                        stack_similarity.push(similarity);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,8 +162,33 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
-                text.setText("This is a " + ImageData.files_names[bestMatchIndex] + ".");
+                txtP.setText("Other possibilities:");
+                text.setText(ImageData.files_names[bestMatchIndex]);
                 noMatch = false;
+                int runner_up_size = stack_index.size() - 1;
+                stack_index.pop();
+                stack_similarity.pop();
+                Log.e("CARD", String.valueOf(runner_up_size));
+                //Log.e("CARD", String.valueOf(runner_up_size));
+                if (runner_up_size > 0) {
+                    String[] listItems = new String[runner_up_size];
+                    for(int i = 0; i < runner_up_size; i++) {
+                        int index = stack_index.pop();
+                        int sim = stack_similarity.pop();
+                        double p = (double)sim / maxSimilarity * 100;
+                        listItems[i] = String.valueOf(ImageData.files_names[index]) + " (" + String.valueOf((int)p) + "%)";
+                        Log.e("CARD", listItems[i]);
+                        if (i == 0) {
+                            txtRunnerups0.setText(listItems[i]);
+                        } else if (i == 1) {
+                            txtRunnerups1.setText(listItems[i]);
+                        } else {
+                            txtRunnerups2.setText(listItems[i]);
+                        }
+                    } //for
+                } else {
+                    txtRunnerups0.setText("No other possibilities found.");
+                }
             } else {
                 text.setText("No match.");
                 noMatch = true;
