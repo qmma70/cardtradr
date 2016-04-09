@@ -2,6 +2,8 @@ package com.example.qmma.featuredetection;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             if (bestMatchIndex >= 0) {
                 txtP.setText("Other possibilities:");
+                text.setPaintFlags(text.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
                 text.setText(ImageData.files_names[bestMatchIndex]);
                 noMatch = false;
                 int runner_up_size = stack_index.size() - 1;
@@ -171,19 +174,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("CARD", String.valueOf(runner_up_size));
                 //Log.e("CARD", String.valueOf(runner_up_size));
                 if (runner_up_size > 0) {
-                    String[] listItems = new String[runner_up_size];
                     for(int i = 0; i < runner_up_size; i++) {
                         int index = stack_index.pop();
                         int sim = stack_similarity.pop();
                         double p = (double)sim / maxSimilarity * 100;
-                        listItems[i] = String.valueOf(ImageData.files_names[index]) + " (" + String.valueOf((int)p) + "%)";
-                        Log.e("CARD", listItems[i]);
+                        String listItem = String.valueOf(ImageData.files_names[index]) + " (" + String.valueOf((int)p) + "%)";
+                        Log.e("CARD", listItem);
                         if (i == 0) {
-                            txtRunnerups0.setText(listItems[i]);
+                            txtRunnerups0.setPaintFlags(txtRunnerups0.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+                            txtRunnerups0.setText(listItem);
                         } else if (i == 1) {
-                            txtRunnerups1.setText(listItems[i]);
+                            txtRunnerups1.setPaintFlags(txtRunnerups1.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+                            txtRunnerups1.setText(listItem);
                         } else {
-                            txtRunnerups2.setText(listItems[i]);
+                            txtRunnerups2.setPaintFlags(txtRunnerups2.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+                            txtRunnerups2.setText(listItem);
                         }
                     } //for
                 } else {
