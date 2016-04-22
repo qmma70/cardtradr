@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         //params.put("pagination", "10");
         params.put("maxEntries", "10");
         params.put("responseencoding",RESPONSE_ENCODING);
-        params.put("QueryKeywords", text.getText().toString().replaceAll("[^A-Za-z]",""));
+        params.put("QueryKeywords", text.getText().toString().replaceAll("[^A-Za-z ]",""));
         params.put("ItemSort", "BestMatch");
 
         WeakReference<Context> contextWeakReference = new WeakReference<Context>(this);
