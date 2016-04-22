@@ -1,6 +1,7 @@
 package com.example.qmma.featuredetection;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Paint;
@@ -19,6 +20,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qmma.featuredetection.EbaySearch.Model.Item;
+import com.example.qmma.featuredetection.EbaySearch.Model.ItemWrapper;
+import com.example.qmma.featuredetection.EbaySearch.Model.SearchEvent;
+import com.example.qmma.featuredetection.EbaySearch.ResultActivity;
+import com.example.qmma.featuredetection.EbaySearch.searchClient;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.DescriptorExtractor;
@@ -29,7 +39,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
+
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends AppCompatActivity {
     TextView text;
@@ -46,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
     private String input2, picsDir;
     TextView txtRunnerups0, txtRunnerups1, txtRunnerups2;
     TextView txtP;
+
+    //Ebay Params
+    String APP_ID = "MarkBeni-CardTrad-PRD-4e7ff2694-0d8e0c78";
+    String CALL_NAME = "FindItems";
+    String RESPONSE_ENCODING = "JSON";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,6 +117,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initiateSearch();
+            }
+        });
+
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
         input2 = picsDir.getAbsolutePath() + File.separator + "input.jpg";
@@ -106,12 +134,57 @@ public class MainActivity extends AppCompatActivity {
         task.execute(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    // Search Event catching
+    public void onEventMainThread (SearchEvent event) {
+        if (event.getResult().equals("success")) {
+            JSONObject jsonObject = event.getJsonObject();
+            List<Item> itemList = new ArrayList<>();
+            JSONArray itemArray = jsonObject.optJSONArray("Item");
+
+            if (itemArray.length() > 0) {
+                for (int i =0; i < itemArray.length(); i++) {
+                    itemList.add(new Item(itemArray.optJSONObject(i)));
+                }
+            }
+            Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
+            intent.putExtra("SearchResults", new ItemWrapper(itemList));
+            startActivity(intent);
+        }
     }
 
+    //Ebay Initiate Search Passing Params
+    private void initiateSearch(){
+        RequestParams params = new RequestParams();
+        params.put("version", "517");
+        //params.put("SERVICE-NAME","FindingService");
+        params.put("appid",APP_ID);
+        params.put("callname", CALL_NAME);
+        //params.put("pagination", "10");
+        params.put("maxEntries", "10");
+        params.put("responseencoding",RESPONSE_ENCODING);
+        params.put("QueryKeywords", text.getText().toString().replaceAll("[^A-Za-z]",""));
+        params.put("ItemSort", "BestMatch");
 
+        WeakReference<Context> contextWeakReference = new WeakReference<Context>(this);
+        searchClient searchClient = new searchClient(contextWeakReference.get());
+        searchClient.searchItem(params);
+    }
+
+    //Event Bus
+    public void onResume () {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    //Event Bus
+    public void onDestroy () {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
 
     private class Task extends AsyncTask<MainActivity, Void, Void> {
 
