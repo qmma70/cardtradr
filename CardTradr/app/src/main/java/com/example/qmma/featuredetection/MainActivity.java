@@ -21,7 +21,7 @@ import com.example.qmma.featuredetection.EbaySearch.Model.Item;
 import com.example.qmma.featuredetection.EbaySearch.Model.ItemWrapper;
 import com.example.qmma.featuredetection.EbaySearch.Model.SearchEvent;
 import com.example.qmma.featuredetection.EbaySearch.ResultActivity;
-import com.example.qmma.featuredetection.EbaySearch.searchClient;
+import com.example.qmma.featuredetection.EbaySearch.SearchClient;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         params.put("ItemSort", "BestMatch");
 
         WeakReference<Context> contextWeakReference = new WeakReference<Context>(this);
-        searchClient searchClient = new searchClient(contextWeakReference.get());
+        SearchClient searchClient = new SearchClient(contextWeakReference.get());
         searchClient.searchItem(params);
     }
 

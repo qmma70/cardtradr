@@ -16,11 +16,11 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by S_And on 2016/4/22 0022.
  */
-public class searchClient {
+public class SearchClient {
     private String SEARCH_URL = "http://open.api.ebay.com/shopping?";
     ProgressDialog progressDialog;
     Context context;
-    public searchClient(Context context) {
+    public SearchClient(Context context) {
         this.context = context;
     }
     public void searchItem (RequestParams params) {
