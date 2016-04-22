@@ -55,10 +55,11 @@ public class SearchResultAdapter extends BaseAdapter {
         }
         final Item item = listItem.get(position);
         if (item != null) {
-            Picasso.with(context).load(item.getImageUrl()).resize(150, 150).into(holder.imgItem);
+            //Picasso.with(context).load(item.getImageUrl()).resize(120, 150).into(holder.imgItem);
+            Picasso.with(context).load(item.getImageUrl()).into(holder.imgItem);
             holder.txtViewName.setText(item.getItemName());
-            holder.txtViewPrice.setText("Price : $ " + item.getPrice());
-
+            //holder.txtViewPrice.setText("Price : $ " + item.getPrice());
+            holder.txtViewPrice.setText("$" + String.valueOf(item.getDoublePrice()));
         }
         return convertView;
     }

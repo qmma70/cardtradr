@@ -114,13 +114,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateSearch();
+                if (text.getText().equals("No match.")) {
+                    return;
+                }
+                initiateSearch(text.getText().toString().replaceAll("[^A-Za-z ]",""));
             }
         });
+
+        txtRunnerups0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (txtRunnerups0.getText().toString().equals("") || txtRunnerups0.getText().toString().equals("No other possibilities found.")) {
+                    return;
+                }
+                initiateSearch(txtRunnerups0.getText().toString().replaceAll("[^A-Za-z ]",""));
+            }
+        });
+
+        txtRunnerups1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (text.getText().toString().equals("")) {
+                    return;
+                }
+                initiateSearch(txtRunnerups1.getText().toString().replaceAll("[^A-Za-z ]",""));
+            }
+        });
+
+        txtRunnerups2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (text.getText().toString().equals("")) {
+                    return;
+                }
+                initiateSearch(txtRunnerups2.getText().toString().replaceAll("[^A-Za-z ]",""));
+            }
+        });
+
 
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         this.picsDir = picsDir.getAbsolutePath();
@@ -150,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Ebay Initiate Search Passing Params
-    private void initiateSearch(){
+    private void initiateSearch(String name){
         RequestParams params = new RequestParams();
         params.put("version", "517");
         //params.put("SERVICE-NAME","FindingService");
@@ -159,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         //params.put("pagination", "10");
         params.put("maxEntries", "10");
         params.put("responseencoding",RESPONSE_ENCODING);
-        params.put("QueryKeywords", text.getText().toString().replaceAll("[^A-Za-z ]",""));
+        params.put("QueryKeywords", name);
         params.put("ItemSort", "BestMatch");
 
         WeakReference<Context> contextWeakReference = new WeakReference<Context>(this);

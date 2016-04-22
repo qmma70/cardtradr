@@ -11,8 +11,28 @@
 
     <ListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:id="@+id/listViewResult"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/txtAve" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Average Price: $ "
+        android:id="@+id/txtAve"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold|italic"
+        android:textColor="#4381fe"
+        android:layout_marginTop="10dp" />
+
+    <WebView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/webView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

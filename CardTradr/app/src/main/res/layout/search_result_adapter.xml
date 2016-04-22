@@ -5,23 +5,28 @@
     android:weightSum="1">
 
     <ImageView
-        android:layout_width="116dp"
-        android:layout_height="116dp"
-        android:id="@+id/imgItem" />
+        android:layout_width="60dp"
+        android:layout_height="80dp"
+        android:id="@+id/imgItem"
+        android:layout_marginRight="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="116dp"
+        android:layout_height="80dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/txtViewName"
         android:layout_weight="1"
-        android:hint="Item Name" />
+        android:hint="Item Name"
+        android:layout_marginRight="3dp" />
 
     <TextView
         android:layout_width="52dp"
-        android:layout_height="116dp"
+        android:layout_height="80dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/txtViewPrice"
         android:layout_weight="1"
-        android:hint="Price" />
+        android:hint="Price"
+        android:layout_marginRight="8dp"
+        android:textStyle="bold|italic"
+        android:gravity="right" />
 </LinearLayout>

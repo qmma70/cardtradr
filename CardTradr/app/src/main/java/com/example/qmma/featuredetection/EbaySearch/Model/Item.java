@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public class Item implements Serializable {
     private String itemId, itemName, imageUrl, shipping, viewUrl, price;
+    private double doublePrice;
     private String itemCategory, buyingFormat, shippingType;
 
     public Item (JSONObject jsonObject) {
@@ -21,7 +22,8 @@ public class Item implements Serializable {
         itemCategory = jsonObject.optString("Title");
         shippingType = jsonObject.optString("ShippingType");
         JSONObject priceObject = jsonObject.optJSONObject("ConvertedCurrentPrice");
-        price = String.valueOf(priceObject.optLong("Value"));
+        price = String.valueOf(priceObject.optDouble("Value"));
+        doublePrice = priceObject.optDouble("Value");
     }
 
     public String getItemId() {
@@ -66,6 +68,10 @@ public class Item implements Serializable {
 
     public String getPrice() {
         return price;
+    }
+
+    public double getDoublePrice() {
+        return doublePrice;
     }
 
     public void setPrice(String price) {
