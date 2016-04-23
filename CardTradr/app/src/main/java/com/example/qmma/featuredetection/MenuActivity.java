@@ -3,6 +3,7 @@ package com.example.qmma.featuredetection;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
     private ImageButton mapImageButton;
     private static final int PLACE_PICKER_REQUEST = 11;
     static final int REQUEST_TAKE_PHOTO = 2;
+    private boolean doubleBackToExitPressedOnce = false;
 
     //---------------------------------------------------------------------------
     //Related to Google Places API
@@ -158,5 +160,24 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }
