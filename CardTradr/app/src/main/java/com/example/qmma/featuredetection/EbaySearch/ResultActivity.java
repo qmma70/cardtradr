@@ -38,11 +38,7 @@ public class ResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-    }
 
-    @Override
-    public void onResume(){
-        super.onResume();
         txtAverage = (TextView) findViewById(R.id.txtAve);
         listViewResult = (ListView)findViewById(R.id.listViewResult);
         webView = (WebView) findViewById(R.id.webView);
@@ -65,6 +61,12 @@ public class ResultActivity extends AppCompatActivity {
         average /= listItem.size();
         //Log.e("CARD", String.valueOf(average));
         txtAverage.setText("Average price: $ " + new DecimalFormat("##.##").format(average));
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
 
     }
 }

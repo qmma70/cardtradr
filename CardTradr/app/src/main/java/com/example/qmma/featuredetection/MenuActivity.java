@@ -97,31 +97,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-
-        int action = MotionEventCompat.getActionMasked(event);
-
-        switch(action) {
-            case (MotionEvent.ACTION_DOWN) :
-
-                return true;
-            case (MotionEvent.ACTION_MOVE) :
-
-                return true;
-            case (MotionEvent.ACTION_UP) :
-                takePic();
-                return true;
-            case (MotionEvent.ACTION_CANCEL) :
-
-                return true;
-            case (MotionEvent.ACTION_OUTSIDE) :
-
-                return true;
-            default :
-                return super.onTouchEvent(event);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +112,15 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
         if (getIntent().hasExtra("AUTO")) {
             takePic();
         }
+
+        ImageButton btn;
+        btn = (ImageButton) findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePic();
+            }
+        });
 
     }
 

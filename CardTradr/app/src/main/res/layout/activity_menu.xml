@@ -9,21 +9,30 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.qmma.featuredetection.MenuActivity"
     android:orientation="vertical"
-    android:background="@drawable/background6">
+    android:background="@drawable/back3"
+    android:id="@+id/entire_view">
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Slide up to identify your card"
+        android:text="Click button to identify your card"
         android:id="@+id/textView4"
         android:textColor="@color/colorText"
-        android:textStyle="bold|italic"
+        android:textStyle="italic"
         android:textSize="20dp"
-        android:layout_marginBottom="49dp"
+        android:layout_above="@+id/btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp" />
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/btn"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/cam2" />
 
 
 </RelativeLayout>

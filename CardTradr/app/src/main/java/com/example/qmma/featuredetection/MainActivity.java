@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 intent.putExtra("AUTO", "TRUE");
                 startActivity(intent);
+                finish();
             }
         });
 
