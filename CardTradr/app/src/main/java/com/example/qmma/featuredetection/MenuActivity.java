@@ -6,9 +6,11 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,9 +39,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class MenuActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-    private Button btnTakePic;
-    private Spinner spinner;
-    private ImageButton mapImageButton;
     private static final int PLACE_PICKER_REQUEST = 11;
     static final int REQUEST_TAKE_PHOTO = 2;
     private boolean doubleBackToExitPressedOnce = false;
@@ -99,13 +98,36 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event){
+
+        int action = MotionEventCompat.getActionMasked(event);
+
+        switch(action) {
+            case (MotionEvent.ACTION_DOWN) :
+
+                return true;
+            case (MotionEvent.ACTION_MOVE) :
+
+                return true;
+            case (MotionEvent.ACTION_UP) :
+                takePic();
+                return true;
+            case (MotionEvent.ACTION_CANCEL) :
+
+                return true;
+            case (MotionEvent.ACTION_OUTSIDE) :
+
+                return true;
+            default :
+                return super.onTouchEvent(event);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        btnTakePic = (Button) findViewById(R.id.btnTakePic);
-        spinner = (Spinner) findViewById(R.id.cardSelectSpinner);
-        mapImageButton = (ImageButton) findViewById(R.id.mapImageButton);
 
         mGoogleApiClient = new GoogleApiClient.Builder(MenuActivity.this)
                 .addApi(Places.PLACE_DETECTION_API)
@@ -115,19 +137,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
         if (getIntent().hasExtra("AUTO")) {
             takePic();
         }
-        btnTakePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePic();
-            }
-        });
 
-        mapImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openMap();
-            }
-        });
     }
 
 
@@ -138,8 +148,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             if (resultCode == RESULT_OK) {
                 Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                String type = (String) spinner.getSelectedItem();
-                i.putExtra("Type", type);
                 startActivity(i);
             } else {
                 Log.e("CARD", "photo not saved.");

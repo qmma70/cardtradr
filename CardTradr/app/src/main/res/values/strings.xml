@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">CardTrader</string>
     <string name="instrLabel">Please select the type of card.</string>
-    <string name="btnTakePicLabel">Identify</string>
+    <string name="btnTakePicLabel">Identify a card</string>
     <string-array name="cardType">
         <item>Sports</item>
         <item>Trading</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>

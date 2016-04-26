@@ -1,0 +1,21 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=85:C2:56:A5:7E:03:6E:6B:47:BF:B7:18:B4:3B:CC:C8:76:62:B5:1E%3Bcom.example.qmma.featuredetection
+
+    You can also add your credentials to an existing key, using this line:
+    85:C2:56:A5:7E:03:6E:6B:47:BF:B7:18:B4:3B:CC:C8:76:62:B5:1E;com.example.qmma.featuredetection
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyCZxBYf7Wn5i4atwa8j954_0bEmd2zSr6s
+    </string>
+</resources>
