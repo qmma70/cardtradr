@@ -1,5 +1,7 @@
 package com.example.qmma.featuredetection;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -11,6 +13,8 @@ import android.os.Bundle;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -47,14 +51,42 @@ public class MapActivity extends FragmentActivity implements LocationListener {
     String[] mPlaceType = null;
     String[] mPlaceTypeName = null;
 
+    private static String[] PERMISSIONS_LOCATION = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
     double mLatitude = 0;
     double mLongitude = 0;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            run();
+        } else {
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        int permission = ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_LOCATION,
+                    1
+            );
+        }
+    }
+
+    private void run() {
 
         // Array of place types
         mPlaceType = getResources().getStringArray(R.array.place_type);
