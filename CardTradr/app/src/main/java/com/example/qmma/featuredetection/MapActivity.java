@@ -1,5 +1,7 @@
 package com.example.qmma.featuredetection;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -19,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -100,6 +103,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
 
             // Getting the name of the best provider
             String provider = locationManager.getBestProvider(criteria, true);
+            //Toast.makeText(getBaseContext(), provider, Toast.LENGTH_LONG).show();
 
             // Getting Current Location From GPS
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -112,13 +116,13 @@ public class MapActivity extends FragmentActivity implements LocationListener {
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            Location location = locationManager.getLastKnownLocation(provider);
+            Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 
             if (location != null) {
                 onLocationChanged(location);
             }
 
-            locationManager.requestLocationUpdates(provider, 20000, 0, this);
+            locationManager.requestLocationUpdates(locationManager.NETWORK_PROVIDER, 20000, 0, this);
 
             // Setting click event lister for the find button
             mSprPlaceType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -140,6 +144,7 @@ public class MapActivity extends FragmentActivity implements LocationListener {
 
                         // Invokes the "doInBackground()" method of the class PlaceTask
                         placesTask.execute(sb.toString());
+                        //Toast.makeText(getBaseContext(), sb.toString(), Toast.LENGTH_LONG).show();
                 }
 
                 @Override
