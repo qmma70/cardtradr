@@ -2,6 +2,7 @@
     <string name="app_name">CardTrader</string>
     <string name="instrLabel">Please select the type of card.</string>
     <string name="btnTakePicLabel">Identify a card</string>
+    <string name="location_button">Location of nearby stores</string>
     <string-array name="cardType">
         <item>Sports</item>
         <item>Trading</item>
