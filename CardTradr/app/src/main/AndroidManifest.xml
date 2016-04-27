@@ -42,9 +42,11 @@
         <activity android:name=".EbaySearch.ResultActivity">
             <intent-filter>
                 <action android:name="com.example.qmma.featuredetection.EbaySearch.ResultActivity" />
-                <catagory android:name = "android.intent.category.DEFAULT" />
+
+                <catagory android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".LocationActivity"></activity>
     </application>
 
 </manifest>
