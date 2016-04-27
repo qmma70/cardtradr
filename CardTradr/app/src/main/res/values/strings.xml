@@ -7,6 +7,4 @@
         <item>Trading</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
-
-    <string name="location_button">Find nearby vendors</string>
 </resources>
