@@ -10,6 +10,9 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -171,5 +174,20 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater=getMenuInflater();
+        menuInflater.inflate(R.menu.map_menu,menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent NextScreen = new Intent(getApplicationContext(), MapActivity.class);
+        startActivity(NextScreen);
+        return super.onOptionsItemSelected(item);
     }
 }

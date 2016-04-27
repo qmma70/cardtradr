@@ -5,10 +5,17 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+    <permission
+        android:name="com.example.qmma.featuredetection.MAPS_RECEIVE"
+        android:protectionLevel="signature"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -21,7 +28,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCZxBYf7Wn5i4atwa8j954_0bEmd2zSr6s" />
+            android:value="AIzaSyDYD85UKwAOcoew4AGyaMiXyDbDln6lgCE" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -42,9 +49,11 @@
         <activity android:name=".EbaySearch.ResultActivity">
             <intent-filter>
                 <action android:name="com.example.qmma.featuredetection.EbaySearch.ResultActivity" />
-                <catagory android:name = "android.intent.category.DEFAULT" />
+
+                <catagory android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".MapActivity"></activity>
     </application>
 
 </manifest>
