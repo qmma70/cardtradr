@@ -46,20 +46,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
     static final int REQUEST_TAKE_PHOTO = 2;
     private boolean doubleBackToExitPressedOnce = false;
 
-    //---------------------------------------------------------------------------
-    //Related to Google Places API
-    // source:http://www.truiton.com/2015/04/using-new-google-places-api-android/
-    private static final String LOG_TAG = "PlacesAPIActivity";
-    private static final int GOOGLE_API_CLIENT_ID = 0;
-    private GoogleApiClient mGoogleApiClient;
-    private static final int PERMISSION_REQUEST_CODE = 100;
-    //---------------------------------------------------------------------------
-
-    //Keep for testing purposes, but remove later.
-    //To do: possibly use current location here?
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
-
     //This function is called when btnTakePic is clicked.
     private void takePic() {
         File picsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -83,34 +69,11 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
         startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
     }
 
-    //This function is called when the mapImageButton is clicked.
-    //It launches the PlacePicker available through Google Places API.
-    //Source: http://www.truiton.com/2015/04/using-new-google-places-api-android/
-    private void openMap(){
-        try {
-            PlacePicker.IntentBuilder intentBuilder =
-                    new PlacePicker.IntentBuilder();
-            intentBuilder.setLatLngBounds(BOUNDS_MOUNTAIN_VIEW);
-            Intent intent = intentBuilder.build(MenuActivity.this);
-            startActivityForResult(intent, PLACE_PICKER_REQUEST);
-
-        } catch (GooglePlayServicesRepairableException
-                | GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(MenuActivity.this)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
-                .build();
 
         if (getIntent().hasExtra("AUTO")) {
             takePic();
@@ -141,14 +104,6 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
             }
 
         //If user selected mapImageButton...
-        } else if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                final Place place = PlacePicker.getPlace(this, data);
-                final CharSequence name = place.getName();
-                final CharSequence address = place.getAddress();
-            } else {
-                Log.e("CARD", "place picker failed");
-            }
         }
     }
 
@@ -179,7 +134,7 @@ public class MenuActivity extends AppCompatActivity implements GoogleApiClient.O
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater=getMenuInflater();
-        menuInflater.inflate(R.menu.map_menu,menu);
+        menuInflater.inflate(R.menu.location_menu_button,menu);
         return true;
 
     }
